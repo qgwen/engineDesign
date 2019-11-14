@@ -21,3 +21,6 @@
 ![avatar](image/sf/源码9.png)
 ![avatar](image/sf/源码10.png)
 最后把MappedStatement添加到Configuration里面，key为namespace + id  
+
+
+
