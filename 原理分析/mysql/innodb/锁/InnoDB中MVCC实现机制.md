@@ -60,3 +60,9 @@ A: 可以，原因：当事务2 SELECT的时候，会创建一个Read View,该�
 A: 用于当查询的记录的DB_TRX_ID在up_limt_id和low_limit_id之间时，判断该记录对于当前read view是否可见。  
 3、有一些记录的DB_TRX_ID在up_limit_id和low_limit_id之间，但为什么对read view可见？  
 A: 事务ID是单调递增的，在创建事务时生成；但事务执行的时间有长有短，导致先创建的事务可能会晚于后创建的事务提交，这样就会导致某些记录的DB_TRX_ID在read view的up_limt_id和low_limt_id之间，但是对read view是可见的。
+
+参考文章：  
+https://segmentfault.com/a/1190000012650596  
+http://mysql.taobao.org/monthly/2018/03/01/  
+https://www.cnblogs.com/stevenczp/p/8018986.html  
+阿里mysql内核月报:http://mysql.taobao.org/   
