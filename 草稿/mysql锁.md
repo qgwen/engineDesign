@@ -13,5 +13,25 @@ INNODB存储引擎对于SELECT语句支持两种一致性锁定读的操作：
 其中：SELECT ... FOR UPDATE对读取的行记录加一个X锁；SELECT ... LOCK IN SHARE MODE 对读取的行记录加一个S锁
 
 #### MVCC 
-是一种提供并发的技术。  
-在只通过锁机制来做并发控制时，只有读读之间可以并发；读写、写读、写写都要阻塞；引入mvcc之后只有写写之间相互阻塞，其他三种操作都能并行。   
+- 是一种提供并发的技术。  
+- 在只通过锁机制来做并发控制时，只有读读之间可以并发；读写、写读、写写都要阻塞；引入mvcc之后只有写写之间相互阻塞，其他三种操作都能并行。  
+- MVCC只在 READ COMMITTED和REPEATABLE READ两个隔离级别下工作。其他两个隔离级别够和MVCC不兼容, 因为 READ UNCOMMITTED总是读取最新的数据行, 而不是符合当前事务版本的数据行。而 SERIALIZABLE 则会对所有读取的行都加锁。   
+mvcc的实现方法     
+一般有两种实现方式： 
+- 写新数据时，把旧数据转移到一个单独的地方，如回滚段；其他人读数据时，从回滚段中把旧数据读出来；如oracle数据库和Mysql的InnoDB引擎。  
+- 写新数据时，旧数据不删除，而是把新数据插入。postgreSQL就是使用的这种实现方式。  
+事务的快照(read view)： 
+通过undolog 和 事务系统实现 
+关于快照（read view）的创建时机：  
+- 在RR(可重复读)的隔离级别下，会在第一次执行select语句时创建read view  
+- 在RC(读已提交)的隔离级别下，会在每次执行select语句时创建read view  
+
+事务ID（Transaction ID）
+InnoDB 里面每个事务有一个唯一的事务 ID，叫作 transaction id。它是在事务开始的时候向 InnoDB 的事务系统申请的，是按申请顺序严格递增的
+
+参考文章：  
+https://segmentfault.com/a/1190000012650596  
+http://mysql.taobao.org/monthly/2015/04/01/  
+http://mysql.taobao.org/monthly/2018/03/01/  
+https://www.cnblogs.com/stevenczp/p/8018986.html  
+http://mysql.taobao.org/ 阿里mysql内核月报  
