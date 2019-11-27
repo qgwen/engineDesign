@@ -35,8 +35,9 @@ Read View中保存的trx_sys状态主要包括：
 - rw_trx_ids:活跃的读写事务id数组  
 ![avatar](image/mvcc_read_view.png)
 如上图所示：   
-up_limit_id为活跃读写事务数组中的最小事务id  
-low_limit_id为活跃读写事务数组中的最大事务id加1，表示在当前read view下还未开启的事务id  
+up_limit_id:活跃读写事务数组中的最小事务id  
+low_limit_id:所有已提交的最大事务id加1
+trx_id_max:所有已提交的最大事务id
 SELECT操作返回的结果的可见性由以下规则决定：
 - 当记录的DB_TRX_ID < up_limit_id时，表示该记录的最后一次修改是在创建read view之前，可见；
 - 当记录的DB_TRX_ID >= low_limit_id时，表示该记录的最后一次修改是在创建read view之后，不可见；此时，根据DB_ROLL_PTR查找undo log(此记录的上一次修改)，然后根据undo log的DB_TRX_ID根据该规则在计算一次可见性  
